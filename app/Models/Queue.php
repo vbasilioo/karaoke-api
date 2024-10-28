@@ -12,6 +12,7 @@ class Queue extends Model
     use HasFactory, HasUuids, SoftDeletes;
 
     protected $fillable = [
+        'id',
         'user_id',
         'music_id',
         'position',

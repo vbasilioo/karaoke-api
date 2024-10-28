@@ -8,6 +8,7 @@ use App\Models\Queue;
 use App\Models\User;
 use App\Services\Queue\QueueService;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class MusicService{
 
@@ -17,6 +18,10 @@ class MusicService{
         $userExists = User::find($data['user_id']);
         if(!$userExists)
             throw new ApiException('O usuário não existe.');
+
+        $position = Music::whereNull('deleted_at')->count() + 1;
+
+        $data['position'] = $position;
 
         $music = Music::create($data);
         if(!$music)
@@ -94,5 +99,35 @@ class MusicService{
             throw new ApiException('Nenhuma música disponível.');
 
         return $music->toArray();
+    }
+
+    public function adjustMusicQueue(): void {
+        Log::info("===> AJUSTANDO FILA IGUALITÁRIA DE MÚSICAS <===");
+
+        $musicsByUser = Music::select('user_id', 'id', 'name')
+            ->orderBy('created_at')
+            ->get()
+            ->groupBy('user_id');
+
+        $orderQueue = [];
+        $hasMusic = true;
+
+        while($hasMusic){
+            $hasMusic = false;
+
+            foreach($musicsByUser as $userId => $musics){
+                if($musics->isNotEmpty()){
+                    $orderQueue[] = $musics->shift();
+                    $hasMusic = true;
+                }
+            }
+        }
+
+        foreach($orderQueue as $i => $music){
+            Log::info('indexing order queue: ' . $orderQueue[$i]);
+            $music->update(['position' => $i + 1]);
+        }
+
+        Log::info("===> FILA IGUALITÁRIA DE MÚSICAS AJUSTADA <===");
     }
 }

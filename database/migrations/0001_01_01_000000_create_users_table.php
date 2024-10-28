@@ -84,6 +84,7 @@ return new class extends Migration
             $table->char('id', 36)->primary();
             $table->string('name');
             $table->string('description');
+            $table->integer('position')->nullable();
             $table->string('video_id');
             $table->char('user_id', 36)->nullable();
             $table->char('show_id', 36)->nullable();

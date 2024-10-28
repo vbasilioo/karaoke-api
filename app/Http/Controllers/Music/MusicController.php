@@ -68,4 +68,13 @@ class MusicController extends Controller
             throw new ApiException($ex->getMessage() ?? 'Erro ao buscar próxima música.', $ex->getCode()?? 500);
         }
     }
+
+    public function adjustMusicQueue(){
+        try{
+            $data = $this->musicService->adjustMusicQueue();
+            return ReturnApi::success($data, 'Ajuste feito com sucesso na fila.');
+        }catch(ApiException $ex){
+            throw new ApiException($ex->getMessage() ?? 'Erro ao ajustar a fila.', $ex->getCode() ?? 500);
+        }
+    }
 }

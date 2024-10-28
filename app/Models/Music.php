@@ -19,6 +19,7 @@ class Music extends Model
         'video_id',
         'user_id',
         'show_id',
+        'position'
     ];
 
     public function user(){
