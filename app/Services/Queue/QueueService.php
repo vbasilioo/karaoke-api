@@ -3,6 +3,7 @@
 namespace App\Services\Queue;
 
 use App\Exceptions\ApiException;
+use App\Models\Music;
 use App\Models\Queue;
 
 class QueueService{
@@ -34,5 +35,14 @@ class QueueService{
                 'music_id' => $item->music_id,
             ]);
         }
+    }
+
+    public function destroy(array $data): array {
+        $music = Music::where(['user_id' => $data['id'], 'position' => $data['position']])->delete();
+    
+        if(!$music)
+            throw new ApiException('Erro ao remover música da fila.');
+    
+        return [];
     }
 }
