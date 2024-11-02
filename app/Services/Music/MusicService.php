@@ -4,6 +4,7 @@ namespace App\Services\Music;
 
 use App\Exceptions\ApiException;
 use App\Models\Music;
+use App\Models\MusicStat;
 use App\Models\Queue;
 use App\Models\User;
 use App\Services\Queue\QueueService;
@@ -19,17 +20,36 @@ class MusicService{
         if(!$userExists)
             throw new ApiException('O usuário não existe.');
 
-        $position = Music::whereNull('deleted_at')->count() + 1;
+        $existingMusic = Music::where('name', $data['name'])->first();
 
-        $data['position'] = $position;
+        if($existingMusic){
+            $stats = MusicStat::firstOrNew(['music_id' => $existingMusic->id]);
+            $stats->request_count++;
+            $stats->save();
+
+            $queue = Queue::create([
+                'user_id' => $data['user_id'],
+                'music_id' => $existingMusic->id,
+            ]);
+
+            if(!$queue)
+                throw new ApiException('Erro ao adicionar música existente à fila.');
+            
+
+            return $existingMusic->toArray();
+        }
+
+        $data['position'] = Music::whereNull('deleted_at')->count() + 1;
 
         $music = Music::create($data);
-        if(!$music)
-            throw new ApiException('Erro ao adicionar música a fila.');
 
-        $existsMusic = Music::find($music->id);
-        if(!$existsMusic)
-            throw new ApiException('A música não foi encontrada.');
+        if(!$music)
+            throw new ApiException('Erro ao adicionar nova música à fila.');
+        
+        MusicStat::create([
+            'music_id' => $music->id,
+            'request_count' => 1,
+        ]);
 
         $queue = Queue::create([
             'user_id' => $data['user_id'],
@@ -38,7 +58,7 @@ class MusicService{
 
         if(!$queue)
             throw new ApiException('Erro ao adicionar usuário na fila.');
-
+        
         return $music->toArray();
     }
 
@@ -103,31 +123,45 @@ class MusicService{
 
     public function adjustMusicQueue(): void {
         Log::info("===> AJUSTANDO FILA IGUALITÁRIA DE MÚSICAS <===");
-
+    
         $musicsByUser = Music::select('user_id', 'id', 'name')
             ->orderBy('created_at')
             ->get()
             ->groupBy('user_id');
-
+    
+        Log::info("Músicas agrupadas por usuário: ", $musicsByUser->toArray());
+    
         $orderQueue = [];
         $hasMusic = true;
-
-        while($hasMusic){
+    
+        while($hasMusic) {
             $hasMusic = false;
-
-            foreach($musicsByUser as $userId => $musics){
-                if($musics->isNotEmpty()){
-                    $orderQueue[] = $musics->shift();
+    
+            foreach($musicsByUser as $userId => $musics) {
+                if($musics->isNotEmpty()) {
+                    $music = $musics->shift();
+                    $orderQueue[] = $music;
+    
+                    Log::info("Adicionando música à fila de ordem: ", [
+                        'user_id' => $userId,
+                        'music_id' => $music->id,
+                        'music_name' => $music->name,
+                    ]);
+    
                     $hasMusic = true;
                 }
             }
         }
-
-        foreach($orderQueue as $i => $music){
-            Log::info('indexing order queue: ' . $orderQueue[$i]);
+    
+        foreach($orderQueue as $i => $music) {
+            Log::info('Indexando fila de ordem: ' . $music->name);
             $music->update(['position' => $i + 1]);
+            Log::info("Música atualizada: ", [
+                'music_id' => $music->id,
+                'new_position' => $i + 1,
+            ]);
         }
-
+    
         Log::info("===> FILA IGUALITÁRIA DE MÚSICAS AJUSTADA <===");
-    }
+    }    
 }

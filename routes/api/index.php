@@ -13,3 +13,4 @@ Route::prefix('/music')->group(base_path('routes/api/music.php'));
 Route::prefix('/show')->group(base_path('routes/api/show.php'));
 Route::prefix('/user')->group(base_path('routes/api/user.php'));
 Route::prefix('/queue')->group(base_path('routes/api/queue.php'));
+Route::prefix('/stats')->group(base_path('routes/api/stats.php'));

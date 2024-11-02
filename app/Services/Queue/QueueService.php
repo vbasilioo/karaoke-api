@@ -38,11 +38,21 @@ class QueueService{
     }
 
     public function destroy(array $data): array {
-        $music = Music::where(['user_id' => $data['id'], 'position' => $data['position']])->delete();
+        $music = Music::where(['user_id' => $data['id'], 'position' => $data['position']])->first();
     
         if(!$music)
+            throw new ApiException('Música não encontrada na área de músicas.');
+    
+        $deleted = $music->delete();
+    
+        if(!$deleted)
+            throw new ApiException('Erro ao remover música da área de músicas.');
+    
+        $queue = Queue::where(['user_id' => $data['id'], 'music_id' => $music->id])->delete();
+    
+        if (!$queue)
             throw new ApiException('Erro ao remover música da fila.');
     
         return [];
-    }
+    }    
 }

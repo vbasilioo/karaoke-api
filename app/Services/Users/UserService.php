@@ -22,6 +22,10 @@ class UserService{
         return $user->toArray();
     }
 
+    public function index(array $data): object{
+        return User::paginate($data['per_page'], ['*'], 'page', $data['page']);
+    }
+
     public function show(array $data): array{
         $user = User::where('show_id', $data['show_id'])->get();
 

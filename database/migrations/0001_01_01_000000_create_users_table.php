@@ -117,6 +117,17 @@ return new class extends Migration
             $table->foreign('music_id')->references('id')->on('musics')->onDelete('cascade');
             $table->primary(['id', 'user_id']);
         });
+
+        Schema::create('music_stats', function (Blueprint $table) {
+            $table->char('id', 36)->primary();
+            $table->char('music_id', 36);
+            $table->integer('play_count')->default(0);
+            $table->integer('request_count')->default(0);
+            $table->timestamps();
+            $table->softDeletes();
+        
+            $table->foreign('music_id')->references('id')->on('musics')->onDelete('cascade');
+        });
     }
 
     /**
@@ -124,6 +135,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('music_stats');
         Schema::dropIfExists('users');
         Schema::dropIfExists('administrators');
         Schema::dropIfExists('shows');
