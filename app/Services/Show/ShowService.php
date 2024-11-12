@@ -4,7 +4,6 @@ namespace App\Services\Show;
 
 use App\Exceptions\ApiException;
 use App\Models\Show;
-use Faker\Core\Number;
 
 class ShowService{
     public function store(array $data): array{
