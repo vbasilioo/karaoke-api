@@ -23,4 +23,8 @@ class User extends Authenticatable
         'telephone',
         'table'
     ];
+
+    public function show(){
+        return $this->belongsTo(Show::class);
+    }
 }

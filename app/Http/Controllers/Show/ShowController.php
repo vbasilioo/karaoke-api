@@ -6,6 +6,7 @@ use App\Builder\ReturnApi;
 use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Show\CodeAccessShowRequest;
+use App\Http\Requests\Show\IndexShowRequest;
 use App\Http\Requests\Show\StoreShowRequest;
 use App\Services\Show\ShowService;
 
@@ -22,9 +23,9 @@ class ShowController extends Controller
         }
     }
 
-    public function index(){
+    public function index(IndexShowRequest $request){
         try{
-            $data = $this->showService->index();
+            $data = $this->showService->index($request->validated());
             return ReturnApi::success($data, 'Shows listados com sucesso.');
         }catch(ApiException $ex){
             throw new ApiException($ex->getMessage() ?? 'Erro ao listar shows.', $ex->getCode() ?? 500);

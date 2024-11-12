@@ -18,8 +18,8 @@ class ShowService{
         return $show->toArray();
     }
 
-    public function index(): array{
-        $show = Show::all();
+    public function index(array $data): array{
+        $show = Show::where('admin_id', $data['admin_id'])->get();
 
         if(!$show)
             throw new ApiException('Nenhum show cadastrado.');

@@ -23,7 +23,7 @@ class UserService{
     }
 
     public function index(array $data): object{
-        return User::paginate($data['per_page'], ['*'], 'page', $data['page']);
+        return User::with('show')->paginate($data['per_page'], ['*'], 'page', $data['page']);
     }
 
     public function show(array $data): array{

@@ -20,4 +20,8 @@ class Show extends Model
         'admin_id',
         'code_access'
     ];
+
+    public function administrator(){
+        return $this->belongsTo(Administrator::class);
+    }
 }

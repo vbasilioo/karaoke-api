@@ -23,7 +23,11 @@ class Administrator extends Authenticatable implements JWTSubject
         'password', 'remember_token',
     ];
 
-        /**
+    public function show(){
+        return $this->belongsTo(Show::class);
+    }
+
+    /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
      * @return mixed
