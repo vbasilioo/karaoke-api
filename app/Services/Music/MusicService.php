@@ -74,7 +74,7 @@ class MusicService{
     public function search(array $data): array{
         $music = Http::youtube()->get('/search', [
             'part' => 'snippet',
-            'q' => $data['query'],
+            'q' => 'karaoke ' . $data['query'],
             'type' => 'video',
             'maxResults' => 50,
             'key' => env('API_YOUTUBE_KEY')
@@ -122,14 +122,10 @@ class MusicService{
     }
 
     public function adjustMusicQueue(): void {
-        Log::info("===> AJUSTANDO FILA IGUALITÁRIA DE MÚSICAS <===");
-    
         $musicsByUser = Music::select('user_id', 'id', 'name')
             ->orderBy('created_at')
             ->get()
             ->groupBy('user_id');
-    
-        Log::info("Músicas agrupadas por usuário: ", $musicsByUser->toArray());
     
         $orderQueue = [];
         $hasMusic = true;
@@ -142,26 +138,13 @@ class MusicService{
                     $music = $musics->shift();
                     $orderQueue[] = $music;
     
-                    Log::info("Adicionando música à fila de ordem: ", [
-                        'user_id' => $userId,
-                        'music_id' => $music->id,
-                        'music_name' => $music->name,
-                    ]);
-    
                     $hasMusic = true;
                 }
             }
         }
     
         foreach($orderQueue as $i => $music) {
-            Log::info('Indexando fila de ordem: ' . $music->name);
             $music->update(['position' => $i + 1]);
-            Log::info("Música atualizada: ", [
-                'music_id' => $music->id,
-                'new_position' => $i + 1,
-            ]);
         }
-    
-        Log::info("===> FILA IGUALITÁRIA DE MÚSICAS AJUSTADA <===");
     }    
 }
