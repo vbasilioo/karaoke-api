@@ -7,12 +7,19 @@ use App\Models\Music;
 use App\Models\Queue;
 
 class QueueService{
-    public function index(): array{
-        $queues = Queue::with('user')->with('music')->get();
-
-        if(!$queues)
+    public function index(array $data): array {
+        $adminId = $data['admin_id'];
+    
+        $queues = Queue::with(['user', 'music'])
+            ->leftJoin('users', 'queues.user_id', '=', 'users.id')
+            ->leftJoin('shows', 'users.show_id', '=', 'shows.id')
+            ->where('shows.admin_id', $adminId)
+            ->get(['queues.*']);
+    
+        if ($queues->isEmpty()) {
             throw new ApiException('Nenhuma fila encontrada.');
-
+        }
+    
         return $queues->toArray();
     }
 

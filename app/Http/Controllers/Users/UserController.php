@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Users;
 use App\Builder\ReturnApi;
 use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\IdUserRequest;
 use App\Http\Requests\User\IndexUserRequest;
 use App\Http\Requests\User\ShowUserRequest;
 use App\Http\Requests\User\StoreUserRequest;
@@ -38,6 +39,15 @@ class UserController extends Controller
             return ReturnApi::success($data, 'Dados dos usuários listados com sucesso.');
         }catch(ApiException $ex){
             throw new ApiException($ex->getMessage() ?? 'Erro ao listar dados dos usuários.', $ex->getCode()?? 500);
+        }
+    }
+
+    public function me(IdUserRequest $request){
+        try{
+            $data = $this->userService->me($request->validated());
+            return ReturnApi::success($data, 'Meus dados listados com sucesso.');
+        }catch(ApiException $ex){
+            throw new ApiException($ex->getMessage() ?? 'Erro ao listar meus dados.', $ex->getCode() ?? 500);
         }
     }
 }

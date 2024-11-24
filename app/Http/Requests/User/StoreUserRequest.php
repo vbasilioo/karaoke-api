@@ -41,17 +41,4 @@ class StoreUserRequest extends FormRequest
             'code_access' => 'código de acesso'
         ];
     }
-
-    public function messages(): array{
-        return [
-            'username.required' => 'O :attribute é obrigatório.',
-            'username.unique' => 'O :attribute já está em uso.',
-            'telephone.required' => 'O :attribute é obrigatório.',
-            'telephone.unique' => 'O :attribute já está em uso.',
-            'table.required' => 'A :attribute é obrigatória.',
-            'table.unique' => 'A :attribute já está em uso.',
-            'code_access.required' => 'Verifique novamente o :attribute.',
-            'code_access.exists' => 'O código de acesso informado não existe.'
-        ];
-    }
 }

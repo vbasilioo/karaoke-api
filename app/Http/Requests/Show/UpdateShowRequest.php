@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Requests\User;
+namespace App\Http\Requests\Show;
 
-use App\Helpers\Requests\Paginate\PageRuleHelper;
-use App\Helpers\Requests\Paginate\PerPageRuleHelper;
 use Illuminate\Foundation\Http\FormRequest;
 
-class IndexUserRequest extends FormRequest
+class UpdateShowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,17 +22,20 @@ class IndexUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            ...PerPageRuleHelper::rule(),
-            ...PageRuleHelper::rule(),
-            'admin_id' => 'required'
+            'id' => 'required',
+            'name' => 'required|string',
+            'hour_start' => 'required',
+            'hour_end' => 'required',
+            'date_show' => 'required|date',
+            'admin_id' => 'required',
+            'type' => 'required|in:POP,RAP,TRAP,FUNK,SERTANEJO,MPB,PAGODE',
         ];
     }
 
     public function prepareForValidation()
     {
         $this->merge([
-            'per_page' => $this->input('per_page', 10),
-            'page' => $this->input('page', 1)
+            'id' => $this->input('id'),
         ]);
     }
 }

@@ -2,11 +2,20 @@
 
 namespace App\Providers;
 
+use App\Events\MusicCreated;
+use App\Listeners\QueueMusicListener;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+
+    protected $listen = [
+        MusicCreated::class => [
+            QueueMusicListener::class,
+        ],
+    ];
+
     /**
      * Register any application services.
      */

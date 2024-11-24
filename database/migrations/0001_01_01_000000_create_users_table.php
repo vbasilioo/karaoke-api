@@ -65,7 +65,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('admin_id')->references('id')->on('administrators')->onDelete('cascade');
+            $table->foreign('admin_id')->references('id')->on('administrators');
         });
 
         Schema::create('users', function (Blueprint $table) {
@@ -74,10 +74,12 @@ return new class extends Migration
             $table->string('telephone');
             $table->integer('table');
             $table->char('show_id', 36)->nullable();
+            $table->char('admin_id', 36)->nullable();
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('show_id')->references('id')->on('shows')->onDelete('cascade');
+            $table->foreign('show_id')->references('id')->on('shows');
+            $table->foreign('admin_id')->references('id')->on('administrators');
         });
 
         Schema::create('musics', function (Blueprint $table) {
@@ -91,19 +93,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('show_id')->references('id')->on('shows')->onDelete('cascade');
-        });
-
-        Schema::create('user_music', function (Blueprint $table) {
-            $table->char('user_id', 36);
-            $table->char('music_id', 36);
-            $table->integer('position');
-            $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('music_id')->references('id')->on('musics')->onDelete('cascade');
-
-            $table->primary(['user_id', 'music_id']);
+            $table->foreign('show_id')->references('id')->on('shows');
         });
 
         Schema::create('queues', function (Blueprint $table) {
@@ -113,8 +103,8 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('music_id')->references('id')->on('musics')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('music_id')->references('id')->on('musics');
             $table->primary(['id', 'user_id']);
         });
 
@@ -126,7 +116,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         
-            $table->foreign('music_id')->references('id')->on('musics')->onDelete('cascade');
+            $table->foreign('music_id')->references('id')->on('musics');
         });
     }
 

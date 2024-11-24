@@ -92,11 +92,48 @@ class MusicService{
             'id' => $data['video_id'],
             'key' => env('API_YOUTUBE_KEY')
         ]);
-
+    
         if(!$music)
             throw new ApiException('Não há detalhes para a música.');
+    
+        $musicData = $music->json();
+    
+        if(isset($musicData['items']) && is_array($musicData['items']))
+            foreach($musicData['items'] as &$item)
+                if(isset($item['contentDetails']['duration'])){
+                    $duration = $item['contentDetails']['duration'];
+                    $convertedDuration = $this->convertDuration($duration);
+                    $item['contentDetails']['duration_time'] = $convertedDuration['formatted'];
+                    $item['contentDetails']['duration_seconds'] = $convertedDuration['seconds'];
+                }
+            
+    
+        return $musicData;
+    }
+    
+    private function convertDuration(string $duration): array {
+        $duration = str_replace('PT', '', $duration);
+    
+        $minutes = 0;
 
-        return $music->json();
+        $seconds = 0;
+    
+        if(preg_match('/(\d+)M/', $duration, $matches))
+            $minutes = (int)$matches[1];
+        
+
+        if(preg_match('/(\d+)S/', $duration, $matches))
+            $seconds = (int)$matches[1];
+        
+    
+        $totalSeconds = ($minutes * 60) + $seconds;
+    
+        $formattedDuration = sprintf('%02d:%02d', $minutes, $seconds);
+    
+        return [
+            'formatted' => $formattedDuration,
+            'seconds' => $totalSeconds
+        ];
     }
 
     public function getDetailsChannel(array $data): array{

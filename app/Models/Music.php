@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\MusicCreated;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,5 +29,14 @@ class Music extends Model
 
     public function musicStat(){
         return $this->hasMany(MusicStat::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($music) {
+            event(new MusicCreated($music));
+        });
     }
 }

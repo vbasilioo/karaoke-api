@@ -18,7 +18,7 @@ class ShowService{
     }
 
     public function index(array $data): array{
-        $show = Show::where('admin_id', $data['admin_id'])->get();
+        $show = Show::where('admin_id', $data['admin_id'])->withTrashed()->get();
 
         if(!$show)
             throw new ApiException('Nenhum show cadastrado.');
@@ -34,4 +34,28 @@ class ShowService{
 
         return $show->toArray();
     }
+
+    public function update(array $data): array{
+        Show::where('id', $data['id'])->update($data);
+        return Show::find($data['id']);
+    }
+
+    public function destroy(array $data): array{
+        $show = Show::find($data['id']);
+
+        if($show)
+            $show->delete();
+        
+        return Show::onlyTrashed()->find($data['id'])->toArray();
+    }
+    
+    public function restore(array $data): array{
+        $show = Show::withTrashed()->find($data['id']);
+
+        if($show)
+            $show->restore();
+        
+        return Show::find($data['id'])->toArray();
+    }
+
 }

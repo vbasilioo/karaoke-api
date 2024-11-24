@@ -7,4 +7,7 @@ Route::middleware(['auth.api'])->group(function(){
     Route::post('/', [ShowController::class, 'store']);
     Route::get('/', [ShowController::class, 'index']);
     Route::get('/{code_access}', [ShowController::class, 'show']);
+    Route::delete('/{id}', [ShowController::class, 'destroy']);
+    Route::put('/{id}', [ShowController::class, 'update']);
+    Route::patch('/{id}', [ShowController::class, 'restore']);
 });

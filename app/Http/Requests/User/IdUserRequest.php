@@ -2,18 +2,16 @@
 
 namespace App\Http\Requests\User;
 
-use App\Helpers\Requests\Paginate\PageRuleHelper;
-use App\Helpers\Requests\Paginate\PerPageRuleHelper;
 use Illuminate\Foundation\Http\FormRequest;
 
-class IndexUserRequest extends FormRequest
+class IdUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -24,17 +22,7 @@ class IndexUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            ...PerPageRuleHelper::rule(),
-            ...PageRuleHelper::rule(),
-            'admin_id' => 'required'
+            //
         ];
-    }
-
-    public function prepareForValidation()
-    {
-        $this->merge([
-            'per_page' => $this->input('per_page', 10),
-            'page' => $this->input('page', 1)
-        ]);
     }
 }
