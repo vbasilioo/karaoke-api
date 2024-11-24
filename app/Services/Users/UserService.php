@@ -46,6 +46,11 @@ class UserService{
     }
 
     public function me(array $data): array{
-        return User::find($data['id'])->toArray();
+        return User::query()
+            ->join('shows', 'users.show_id', 'shows.id')
+            ->select('users.*', 'shows.id AS show_id')
+            ->where('users.id', $data['id'])
+            ->get()
+            ->toArray();
     }
 }

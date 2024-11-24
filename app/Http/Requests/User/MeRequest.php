@@ -4,14 +4,14 @@ namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class IdUserRequest extends FormRequest
+class MeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,14 @@ class IdUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'id' => 'required|exists:users,id'
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'id' => $this->route('id')
+        ]);
     }
 }
