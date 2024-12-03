@@ -2,18 +2,17 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\ProcessMusicQueue as JobsProcessMusicQueue;
+use App\Jobs\AddMusicJob;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
-class ProcessMusicQueue extends Command
+class AddMusicCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:process-music-queue';
+    protected $signature = 'app:add-music-command';
 
     /**
      * The console command description.
@@ -27,6 +26,6 @@ class ProcessMusicQueue extends Command
      */
     public function handle()
     {
-        JobsProcessMusicQueue::dispatch();
+        AddMusicJob::dispatch();
     }
 }

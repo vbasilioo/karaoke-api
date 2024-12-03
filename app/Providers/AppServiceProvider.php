@@ -9,13 +9,6 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-
-    protected $listen = [
-        MusicCreated::class => [
-            QueueMusicListener::class,
-        ],
-    ];
-
     /**
      * Register any application services.
      */

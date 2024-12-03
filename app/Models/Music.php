@@ -30,13 +30,4 @@ class Music extends Model
     public function musicStat(){
         return $this->hasMany(MusicStat::class);
     }
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::created(function ($music) {
-            event(new MusicCreated($music));
-        });
-    }
 }

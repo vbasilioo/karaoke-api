@@ -1,6 +1,4 @@
 <?php
 
-use App\Jobs\ProcessMusicQueue;
+use App\Jobs\AdjustQueueMusicJob;
 use Illuminate\Support\Facades\Schedule;
-
-Schedule::job(new ProcessMusicQueue(), 'app:process-music-queue')->everySecond();
