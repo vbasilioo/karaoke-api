@@ -2,6 +2,7 @@
 
 namespace App\Services\Music;
 
+use App\Events\AddMusicEvent;
 use App\Exceptions\ApiException;
 use App\Models\Music;
 use App\Models\MusicStat;
@@ -58,6 +59,8 @@ class MusicService{
 
         if(!$queue)
             throw new ApiException('Erro ao adicionar usuário na fila.');
+
+        event(new AddMusicEvent());
         
         return $music->toArray();
     }
@@ -180,8 +183,7 @@ class MusicService{
             }
         }
     
-        foreach($orderQueue as $i => $music) {
+        foreach($orderQueue as $i => $music)
             $music->update(['position' => $i + 1]);
-        }
-    }    
+    }
 }
