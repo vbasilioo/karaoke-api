@@ -75,9 +75,8 @@ class AddMusicEvent implements ShouldBroadcast
             }
         }
 
-        foreach ($orderQueue as $i => $music) {
+        foreach($orderQueue as $i => $music)
             $music->update(['position' => $i + 1]);
-        }
 
         return array_map(function ($music) {
             return $music->toArray();

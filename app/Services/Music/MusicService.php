@@ -108,6 +108,11 @@ class MusicService{
                     $convertedDuration = $this->convertDuration($duration);
                     $item['contentDetails']['duration_time'] = $convertedDuration['formatted'];
                     $item['contentDetails']['duration_seconds'] = $convertedDuration['seconds'];
+
+                    $existingMusic = Music::where('id', $data['video_id'])->first();
+
+                    if($existingMusic) 
+                        $existingMusic->update(['duration_seconds' => $convertedDuration['seconds']]);
                 }
             
     
@@ -185,5 +190,36 @@ class MusicService{
     
         foreach($orderQueue as $i => $music)
             $music->update(['position' => $i + 1]);
+    }
+
+    public function processCurrentMusic(): void{
+        $currentMusic = Music::orderBy('position')->first();
+
+        if(!$currentMusic){
+            Log::info('Nenhuma música na fila.');
+            return;
+        }
+
+        $duration = $currentMusic->duration_seconds ?? 0;
+
+        if($duration === 0){
+            Log::warning("Música '{$currentMusic->name}' não possui duração válida.");
+            return;
+        }
+
+        Log::info("Reproduzindo música: '{$currentMusic->name}', duração: {$duration} segundos.");
+
+        sleep($duration);
+
+        Log::info("Música '{$currentMusic->name}' encerrada após {$duration} segundos.");
+
+        $currentMusic->delete();
+
+        $nextMusic = Music::orderBy('position')->first();
+
+        if($nextMusic)
+            Log::info("Próxima música na fila: '{$nextMusic->name}'.");
+        else 
+            Log::info('Nenhuma próxima música na fila.');
     }
 }
