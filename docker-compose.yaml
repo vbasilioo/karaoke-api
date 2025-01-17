@@ -1,10 +1,6 @@
-version: '3.8'
-
 services:
   laravel:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: php:8.2-fpm
     container_name: laravel-app
     restart: unless-stopped
     working_dir: /var/www/html
@@ -15,40 +11,28 @@ services:
     networks:
       - laravel-network
     environment:
-      - APP_ENV=local
-      - APP_DEBUG=true
-      - APP_KEY=base64:SomeAppKey=
-      - DB_HOST=db
-      - DB_PORT=3306
-      - DB_DATABASE=karaokedb
-      - DB_USERNAME=root
-      - DB_PASSWORD=root
+      APP_ENV: ${APP_ENV}
+      APP_DEBUG: ${APP_DEBUG}
+      APP_KEY: ${APP_KEY}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
 
   db:
     image: mysql:8.0
     container_name: mysql-db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: karaokedb
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - dbdata:/var/lib/mysql
-    networks:
-      - laravel-network
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
-    restart: unless-stopped
-    ports:
-      - "8080:80"
-    environment:
-      PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: root
     networks:
       - laravel-network
 
