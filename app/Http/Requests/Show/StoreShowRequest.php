@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Show;
 
 use App\Traits\BasicFormRequestValidation;
-use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreShowRequest extends FormRequest

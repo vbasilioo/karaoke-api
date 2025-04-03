@@ -98,11 +98,11 @@ return new class extends Migration
 
         Schema::create('queues', function (Blueprint $table) {
             $table->char('id', 36);
-            $table->char('user_id', 36)->nullable();
+            $table->char('user_id', 36);
             $table->char('music_id', 36);
             $table->timestamps();
             $table->softDeletes();
-
+        
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('music_id')->references('id')->on('musics');
             $table->primary(['id', 'user_id']);
