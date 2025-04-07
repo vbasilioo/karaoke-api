@@ -115,7 +115,6 @@ class MusicService{
                         $existingMusic->update(['duration_seconds' => $convertedDuration['seconds']]);
                 }
             
-    
         return $musicData;
     }
     

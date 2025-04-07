@@ -1,44 +1,39 @@
 services:
-  laravel:
-    image: php:8.2-fpm
-    container_name: laravel-app
-    restart: unless-stopped
-    working_dir: /var/www/html
-    volumes:
-      - .:/var/www/html
+  web:
+    image: webdevops/php-apache-dev:8.2-alpine
+    container_name: api-laravel-back
     ports:
-      - "9000:9000"
-    networks:
-      - laravel-network
-    environment:
-      APP_ENV: ${APP_ENV}
-      APP_DEBUG: ${APP_DEBUG}
-      APP_KEY: ${APP_KEY}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_DATABASE: ${DB_DATABASE}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-
-  db:
-    image: mysql:8.0
-    container_name: mysql-db
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "3307:3306"
+      - "8000:80"
+      - "8080:8080"
     volumes:
-      - dbdata:/var/lib/mysql
+      - ./:/app
+    environment:
+      WEB_DOCUMENT_ROOT: /app/public
+    user: "root"
+    depends_on: 
+      - dbsneakers
     networks:
-      - laravel-network
+      - app-network
 
-networks:
-  laravel-network:
-    driver: bridge
+  dbsneakers:
+    image: mysql:8.3
+    container_name: sneakers-mysql
+    volumes:
+      - db:/var/lib/mysql/
+    ports:
+      - '${FORWARD_DB_PORT:-3307}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+    networks:
+      - app-network
 
 volumes:
-  dbdata:
+  db:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
