@@ -10,8 +10,10 @@ services:
     environment:
       WEB_DOCUMENT_ROOT: /app/public
     user: "root"
-    depends_on: 
+    depends_on:
       - dbsneakers
+      # - queue-default
+      # - queue-notifications
     networks:
       - app-network
 
@@ -27,6 +29,32 @@ services:
       MYSQL_DATABASE: '${DB_DATABASE}'
       MYSQL_USER: '${DB_USERNAME}'
       MYSQL_PASSWORD: '${DB_PASSWORD}'
+    networks:
+      - app-network
+
+  queue-default:
+    image: webdevops/php-apache-dev:8.2-alpine
+    container_name: laravel-queue-default
+    restart: always
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: php artisan queue:work --queue=default
+    depends_on:
+      - dbsneakers
+    networks:
+      - app-network
+
+  queue-notifications:
+    image: webdevops/php-apache-dev:8.2-alpine
+    container_name: laravel-queue-notifications
+    restart: always
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: php artisan queue:work --queue=notifications
+    depends_on:
+      - dbsneakers
     networks:
       - app-network
 

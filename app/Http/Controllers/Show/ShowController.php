@@ -52,7 +52,7 @@ class ShowController extends Controller
         }
     }
 
-    public function destroy(IdShowRequest $request){
+    public function delete(IdShowRequest $request){
         try{
             $data = $this->showService->destroy($request->validated());
             return ReturnApi::success($data, 'Show deletado com sucesso.');

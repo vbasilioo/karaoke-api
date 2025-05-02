@@ -29,7 +29,7 @@ class IdShowRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
-            'id' => $this->input('id'),
+            'id' => $this->route('id'),
         ]);
     }
 }
