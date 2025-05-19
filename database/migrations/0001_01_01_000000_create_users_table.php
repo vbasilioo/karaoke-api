@@ -75,6 +75,9 @@ return new class extends Migration
             $table->integer('table');
             $table->char('show_id', 36)->nullable();
             $table->char('admin_id', 36)->nullable();
+
+            $table->string('photo')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
 
@@ -102,7 +105,7 @@ return new class extends Migration
             $table->char('music_id', 36);
             $table->timestamps();
             $table->softDeletes();
-        
+
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('music_id')->references('id')->on('musics');
             $table->primary(['id', 'user_id']);
@@ -115,7 +118,7 @@ return new class extends Migration
             $table->integer('request_count')->default(0);
             $table->timestamps();
             $table->softDeletes();
-        
+
             $table->foreign('music_id')->references('id')->on('musics');
         });
     }

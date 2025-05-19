@@ -80,6 +80,7 @@ class MusicService{
             'q' => 'karaoke ' . $data['query'],
             'type' => 'video',
             'maxResults' => 50,
+            'videoEmbeddable' => 'true',
             'key' => env('API_YOUTUBE_KEY')
         ]);
 
