@@ -28,7 +28,9 @@ class StoreUserRequest extends FormRequest
             'username' => 'required|unique:users,username',
             'telephone' => 'required|unique:users',
             'table' => 'required|unique:users',
-            'code_access' => 'required|exists:shows,code_access'
+            'code_access' => 'required|exists:shows,code_access',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'avatarUrl' => 'nullable|string'
         ];
     }
 
@@ -38,7 +40,9 @@ class StoreUserRequest extends FormRequest
             'username' => 'nome de usuário',
             'telephone' => 'telefone',
             'table' => 'mesa',
-            'code_access' => 'código de acesso'
+            'code_access' => 'código de acesso',
+            'photo' => 'foto',
+            'avatarUrl' => 'avatar url'
         ];
     }
 }

@@ -24,7 +24,14 @@ class User extends Authenticatable
         'table'
     ];
 
-    public function show(){
+    public function show()
+    {
         return $this->belongsTo(Show::class);
+    }
+
+
+    public function getPhotoUrlAttribute()
+    {
+        return $this->photo ? asset('storage/' . $this->photo) : null;
     }
 }
